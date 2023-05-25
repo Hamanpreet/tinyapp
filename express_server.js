@@ -7,6 +7,9 @@ const PORT = 8080;
 
 app.set("view engine", "ejs");
 
+//To parse the buffer data
+app.use(express.urlencoded({ extended: true }));
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -14,13 +17,18 @@ const urlDatabase = {
 
 /**
  * Render the urls
- * param {object} @templateVars
+ * @param {object} templateVars
  * urls_index file in views,so,no need to give path or extension
  * sending back a template & object with data template needs
  */
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase};
   res.render("urls_index", templateVars);
+});
+
+app.post("/urls", (req, res) => {
+  console.log(req.body);
+  res.send("OK");
 });
 
 app.get("/urls/new", (req, res) => {

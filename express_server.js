@@ -12,26 +12,23 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-app.get("/", (req, res) => {
-  res.send("Hello!");
-});
-
-app.get("/urls.json", (req,res) => {
-  res.json(urlDatabase);
-});
-
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello  <b>World</b></body></html>");
-});
-
+/**
+ * Render the urls
+ * param {object} @templateVars
+ * urls_index file in views, so,no need to give path or extension
+ */
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase};
-  // for (let id in templateVars.urls) {
-
-  //   console.log(id);
-  //   console.log(templateVars.urls[id]);
-  // }
   res.render("urls_index", templateVars);
+});
+
+/**
+ * @param {string} id- Given by user in URL accessed by req.params.id 
+ * @example - if b2xVn2 given in url, longurl is lighthouse one
+ */
+app.get("/urls/:id", (req, res) => {
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
+  res.render("urls_show", templateVars);
 });
 
 

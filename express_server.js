@@ -15,7 +15,8 @@ const urlDatabase = {
 /**
  * Render the urls
  * param {object} @templateVars
- * urls_index file in views, so,no need to give path or extension
+ * urls_index file in views,so,no need to give path or extension
+ * sending back a template & object with data template needs
  */
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase};
@@ -23,7 +24,7 @@ app.get("/urls", (req, res) => {
 });
 
 /**
- * @param {string} id- Given by user in URL accessed by req.params.id 
+ * @param {string} id- Given by user in URL accessed by req.params.id in backend 
  * @example - if b2xVn2 given in url, longurl is lighthouse one
  */
 app.get("/urls/:id", (req, res) => {

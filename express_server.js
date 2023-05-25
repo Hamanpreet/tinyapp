@@ -24,6 +24,18 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello  <b>World</b></body></html>");
 });
 
+app.get("/urls", (req, res) => {
+  const templateVars = { urls: urlDatabase};
+  // for (let id in templateVars.urls) {
+
+  //   console.log(id);
+  //   console.log(templateVars.urls[id]);
+  // }
+  res.render("urls_index", templateVars);
+});
+
+
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });

@@ -23,6 +23,11 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+app.get("/urls/new", (req, res) => {
+  res.render("urls_new");
+});
+
+
 /**
  * @param {string} id- Given by user in URL accessed by req.params.id in backend 
  * @example - if b2xVn2 given in url, longurl is lighthouse one
@@ -31,6 +36,9 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render("urls_show", templateVars);
 });
+
+
+
 
 
 

@@ -1,6 +1,11 @@
+/***
+ * importing express and setting the engine to ejs
+ */
 const express = require("express");
 const app = express();
-const PORT = 8080;  // default
+const PORT = 8080;  
+
+app.set("view engine", "ejs");
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",

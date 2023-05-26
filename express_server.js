@@ -49,6 +49,12 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${id}`);
 });
 
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase[req.params.id];
+  console.log(req.params.id);
+  res.redirect("/urls");
+});
+
 /**
  * @param {string} id- Given by user in URL accessed by req.params.id in backend 
  * @example - if b2xVn2 given in url, longurl is lighthouse one

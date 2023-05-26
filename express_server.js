@@ -38,22 +38,32 @@ app.get("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
+app.post("/urls/:id/update",(req, res) => {
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
+  console.log(urlDatabase);
+  res.render("urls_show",templateVars);
+});
+app.post("/urls/:id", (req, res) => {
+ urlDatabase[req.params.id] = req.body.newURL;
+  res.redirect("/urls");
+});
 
 /**
  * redirects user to display shortURL for the long one (302)
  * @param {string} id - shortURL(key for database obj)
  */
-app.post("/urls", (req, res) => {
-  const id = generateRandomString();
-  urlDatabase[id] = req.body.longURL;
-  res.redirect(`/urls/${id}`);
-});
+// app.post("/urls", (req, res) => {
+//   const id = generateRandomString();
+//   urlDatabase[id] = req.body.longURL;
+//   res.redirect(`/urls/${id}`);
+// });
 
 app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[req.params.id];
-  console.log(req.params.id);
   res.redirect("/urls");
 });
+
+
 
 /**
  * @param {string} id- Given by user in URL accessed by req.params.id in backend 

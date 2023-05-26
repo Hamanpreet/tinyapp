@@ -24,7 +24,7 @@ const generateRandomString = function() {
 };
 
 /**
- * Render the urls
+ * Middleware function to handle GET requests to /urls
  * @param {object} templateVars
  * urls_index file in views,so,no need to give path or extension
  * sending back a template & object with data template needs

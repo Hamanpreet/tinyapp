@@ -14,7 +14,6 @@
 
   <body>
     <%- include('partials/_header') %>
-  
     <div class="card text-center">
       <div class="card-header"></div>
       <div class="card-body">
@@ -22,15 +21,16 @@
         <p class="card-text">
           Short URL ID: <a href="/u/<%= id %>"><%= id %></a>
         </p>
-        <form action="/urls" method="POST">
-        <div>
+        <!-- action tells where the information goes when submitted -->
+        <form action="/urls/<%= id %>/update" method="POST">
+        <div class=""center>
           <label for="newURL">New URL:</label>
           <input
           class="form-control"
           type="text"
           name="newURL"
           placeholder="http://"
-          style="width: 300px; margin: 6em; align-items:center"
+          style="width: 300px; margin: 6em"
         /><button type="submit" class="btn btn-primary">Submit</button></div>
       </div>
       <div class="card-footer text-muted"></div>

@@ -40,9 +40,9 @@
               <td><%= id %></td>
               <td><%= urls[id] %></td>
                <!-- id needs to be in Aligator braces as we want value to be replaced by the origin value provided -->
-               <form method="POST" action="/urls/<%= id %>/update">
-                <td><button type="submit" style="background-color:white; color: blue; border: 1px solid blue;" class="btn btn-primary">Edit</button></td>
-              </form>
+               <!--href has the link where the edit button takes us to(urls/show) -->
+                <td><a href="/urls/<%= id %>" style="background-color:white; color: blue; border: 1px solid blue;" class="btn btn-primary">Edit</a></td>
+            
                <form method="POST" action="/urls/<%= id %>/delete">
               <td><button type="submit" style="background-color:white; color:red; border: 1px solid red;" class="btn btn-primary">Delete</button></td>
             </form>

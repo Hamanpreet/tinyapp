@@ -50,6 +50,11 @@ app.post("/urls/:id",(req, res) => {
   res.render("urls_show",templateVars);
 });
 
+app.post("/login",(req, res) => {
+  res.cookie("username", req.body.username);
+  res.redirect("/urls");
+});
+
 /**
  * redirects user to display shortURL for the long one (302)
  * @param {string} id - shortURL(key for database obj)

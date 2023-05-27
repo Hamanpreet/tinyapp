@@ -11,8 +11,17 @@
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
-      <span class="navbar-toggler-icon"></span>
+    <span class="navbar-toggler-icon"></span>
     </button>
+    <form action="/login" method="POST">
+      <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            style="width: 300px; margin: 6em"; align-items="center"
+          />
+          <button type="submit" class="btn btn-primary">Login</button>
+        </form>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>

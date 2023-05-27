@@ -23,17 +23,20 @@
         </p>
         <!-- action tells where the information goes when submitted -->
         <form action="/urls/<%= id %>/update" method="POST">
-        <div class=""center>
-          <label for="newURL">New URL:</label>
+      </div>
+      <div class="card-footer text-muted">
+        <p style="text-align:left; color:gray" >New URL</p>
+          <center>
+          <h5 class="card-title" style="color:gray">Edit</h5>
           <input
           class="form-control"
           type="text"
           name="newURL"
           placeholder="http://"
-          style="width: 300px; margin: 6em"
-        /><button type="submit" class="btn btn-primary">Submit</button></div>
+          style="width: 300px; margin: 6em"; align-items="center"
+        /></center>
+        <button type="submit" class="btn btn-primary">Submit</button>
       </div>
-      <div class="card-footer text-muted"></div>
     </div>
   </form>
     </body>

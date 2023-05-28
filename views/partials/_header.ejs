@@ -11,12 +11,31 @@
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
-      <span class="navbar-toggler-icon"></span>
+    <span class="navbar-toggler-icon"></span>
     </button>
+    <!-- User Login Logic-->
+    
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+      
+        <% if(username) { %>
+          <p>Logged in as: <%= username%>
+            <form action="/logout" method="POST">
+            <button type="submit" class="btn btn-primary">Logout</button></p>
+          </form>
+          <% } else { %> 
+            <form action="/login" method="POST">
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                style="width: 300px; margin: 1em"; align-items="right"
+              />  
+              <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+          <% } %> 
       </div>
     </div>
   </nav>

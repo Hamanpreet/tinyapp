@@ -22,18 +22,19 @@
           Short URL ID: <a href="/u/<%= id %>"><%= id %></a>
         </p>
         <!-- action tells where the information goes when submitted -->
-        <form action="/urls/<%= id %>/update" method="POST">
       </div>
+      <form action="/urls/<%= id %>/update" method="POST">
       <div class="card-footer text-muted">
-        <p style="text-align:left; color:gray" >New URL</p>
+        <p style="text-align:left; color:gray">New URL:</p>
           <center>
           <h5 class="card-title" style="color:gray">Edit</h5>
           <input
           class="form-control"
           type="text"
+          height="200"
           name="newURL"
-          placeholder="http://"
-          style="width: 300px; margin: 6em"; align-items="center"
+          value=<%= `${longURL}` %>
+          style="width: 300px; margin: 1em"; align-items="center"
         /></center>
         <button type="submit" class="btn btn-primary">Submit</button>
       </div>

@@ -24,11 +24,6 @@ const generateRandomString = function() {
   }
   return result;
 };
-app.post("/login",(req, res) => {
-  res.cookie("username", req.body.username);
-  res.redirect("/urls");
-});
-
 
 /**
  * Middleware function to handle GET requests to /urls
@@ -47,10 +42,9 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
-//updates the longURL with edit button
-app.post("/urls/:id/update", (req, res) => {
- urlDatabase[req.params.id] = req.body.newURL;
-  res.redirect("/urls");
+app.get("/urls/:id", (req, res) => {
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], username: req.cookies["username"]};
+  res.render("urls_show", templateVars);
 });
 
 app.post("/urls/:id",(req, res) => {
@@ -74,14 +68,29 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
+//updates the longURL with edit button
+app.post("/urls/:id/update", (req, res) => {
+  urlDatabase[req.params.id] = req.body.newURL;
+   res.redirect("/urls");
+});
+
+app.post("/login",(req, res) => {
+  res.cookie("username", req.body.username);
+  res.redirect("/urls");
+});
+
+
+app.post("/logout", (req,res) =>{
+  res.clearCookie('username');
+  res.redirect("urls");
+});
+
+
 /**
  * @param {string} id- Given by user in URL accessed by req.params.id in backend 
  * @example - if b2xVn2 given in url, longurl is lighthouse one
  */
-app.get("/urls/:id", (req, res) => {
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], username: req.cookies["username"]};
-  res.render("urls_show", templateVars);
-});
+
 
 /**
  * If user directly access shortURL, it redirects to longURL from database

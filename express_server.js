@@ -15,6 +15,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
+  },
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  },
+};
+
 const generateRandomString = function() {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -32,19 +45,23 @@ const generateRandomString = function() {
  * sending back a template & object with data template needs
  */
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"],};
+  const templateVars = { urls: urlDatabase, username: users[user_id],};
   res.render("urls_index", templateVars);
 });
 
 //page opens when we click on create new URL
 app.get("/urls/new", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"],};
+  const templateVars = { urls: urlDatabase, username: users[users_id],};
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], username: req.cookies["username"]};
   res.render("urls_show", templateVars);
+});
+
+app.get("/register", (req,res) => {
+res.render("register.ejs");
 });
 
 app.post("/urls/:id",(req, res) => {
@@ -85,6 +102,13 @@ app.post("/logout", (req,res) =>{
   res.redirect("urls");
 });
 
+app.post("/register", (req,res) => {
+  const id = generateRandomString();
+  users[id] = {id: id, email:req.body.email, password: req.body.password};
+  res.cookie("user_id",id);
+  console.log(users);
+  res.redirect("/urls");
+});
 
 /**
  * @param {string} id- Given by user in URL accessed by req.params.id in backend 

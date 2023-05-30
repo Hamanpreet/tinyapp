@@ -45,18 +45,26 @@ const generateRandomString = function() {
  * sending back a template & object with data template needs
  */
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: users[user_id],};
+  const user_id = req.cookies.user_id;
+  // Look up the specific user object in the 'users' object using the 'user_id' cookie value
+  const user = users[user_id];
+  const templateVars = {user, urls:urlDatabase};
   res.render("urls_index", templateVars);
 });
 
 //page opens when we click on create new URL
 app.get("/urls/new", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: users[users_id],};
+  const user_id = req.cookies.user_id;
+  // Look up the specific user object in the 'users' object using the 'user_id' cookie value
+  const user = users[user_id];
+  const templateVars = {user, urls: urlDatabase};
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], username: req.cookies["username"]};
+  const user_id = req.cookies.user_id;
+  const user = users[user_id];
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], username: req.cookies["username"], user};
   res.render("urls_show", templateVars);
 });
 
@@ -106,7 +114,7 @@ app.post("/register", (req,res) => {
   const id = generateRandomString();
   users[id] = {id: id, email:req.body.email, password: req.body.password};
   res.cookie("user_id",id);
-  console.log(users);
+  //console.log(users);
   res.redirect("/urls");
 });
 

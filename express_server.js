@@ -38,6 +38,11 @@ const generateRandomString = function() {
   return result;
 };
 
+//Helper function to check if user already registered with that email
+const lookUser = function() {
+
+};
+
 /**
  * Middleware function to handle GET requests to /urls
  * @param {object} templateVars
@@ -112,10 +117,14 @@ app.post("/logout", (req,res) =>{
 
 app.post("/register", (req,res) => {
   const id = generateRandomString();
-  users[id] = {id: id, email:req.body.email, password: req.body.password};
-  res.cookie("user_id",id);
-  //console.log(users);
-  res.redirect("/urls");
+  //console.log(req.body.password);
+  if (req.body.email !== "" && req.body.password !== "") {
+    users[id] = {id: id, email:req.body.email, password: req.body.password};
+    res.cookie("user_id",id);
+    res.redirect("/urls");
+  } else {
+    return res.status(400).send("E-mail and password both required");
+  }
 });
 
 /**

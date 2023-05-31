@@ -3,8 +3,16 @@
  */
 const express = require("express");
 const app = express();
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
+const cookieSession = require('cookie-session');
+const Keygrip = require('keygrip');
+// Generate a set of keys for signing cookies
+const keys = new Keygrip(['key1', 'key2', 'key3']);
+app.use(cookieSession({
+  name: 'session',
+  keys: keys,
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 const PORT = 8080;  
 app.set("view engine", "ejs");
 //To parse the request buffer data
@@ -59,7 +67,8 @@ const getUserByEmail = function(email) {
  * sending back a template & object with data template needs
  */
 app.get("/urls", (req, res) => {
-  const user_id = req.cookies.user_id;
+  //const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   // Look up the specific user object in the 'users' object using the 'user_id' cookie value
   const user = users[user_id];
   const templateVars = {user, urls:urlDatabase};
@@ -69,7 +78,7 @@ app.get("/urls", (req, res) => {
 
 //Page opens when we click on create new URL
 app.get("/urls/new", (req, res) => {
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   // Look up the specific user object in the 'users' object using the 'user_id' cookie value
   const user = users[user_id];
   const templateVars = {user, urls: urlDatabase};
@@ -78,7 +87,7 @@ app.get("/urls/new", (req, res) => {
 
 //route for displaying tinyURL for longURL
 app.get("/urls/:id", (req, res) => {
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   const user = users[user_id];
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], user,};
   res.render("urls_show", templateVars);
@@ -103,14 +112,15 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.get("/register", (req,res) => {
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
+  console.log(user_id);
   const user = users[user_id];
   const templateVars = {user};
   res.render("register.ejs", templateVars);
 });
 
 app.get("/login", (req,res) => {
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   const user = users[user_id];
   const templateVars = {user};
   res.render("login.ejs",templateVars);
@@ -155,13 +165,15 @@ app.post("/login",(req, res) => {
     return res.status(403).send("Password Incorrect");
   } 
   //console.log(req.body);
-  res.cookie("user_id", foundUser.id );
+  //res.cookie("user_id", foundUser.id ) (this is for using cookie-parser);
+  req.session.user_id = foundUser.id;
   res.redirect("/urls");
 });
 
 //clears cookie and redirect to login page
 app.post("/logout", (req,res) =>{
-  res.clearCookie('user_id');
+  req.session.user_id = "";
+  //res.clearCookie('user_id');
   res.redirect("/login");
 });
 
@@ -180,7 +192,7 @@ app.post("/register", (req,res) => {
   }
   users[id] = {id: id, email:req.body.email, password: hashedPassword};
   console.log(users);
-  res.cookie("user_id",id);
+  req.session.user_id = id;
   res.redirect("/urls");
 });
 

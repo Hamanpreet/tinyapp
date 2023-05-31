@@ -9,6 +9,7 @@ const PORT = 8080;
 app.set("view engine", "ejs");
 //To parse the request buffer data
 app.use(express.urlencoded({ extended: true }));
+const bcrypt = require('bcryptjs');
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -145,11 +146,12 @@ app.post("/urls/:id/update", (req, res) => {
 
 //log in existing user after all the checks and redirects
 app.post("/login",(req, res) => {
+  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
   const foundUser = getUserByEmail(req.body.email);
   if (!foundUser) {
     return res.status(403).send("User is not registered");
   }
-  if (foundUser.password !== req.body.password) {
+  if (bcrypt.compareSync(foundUser.password, hashedPassword)) {
     return res.status(403).send("Password Incorrect");
   } 
   //console.log(req.body);
@@ -165,6 +167,7 @@ app.post("/logout", (req,res) =>{
 
 //register new user in database but first check all the conditions using helper function
 app.post("/register", (req,res) => {
+  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
   const id = generateRandomString();
   //console.log(req.body.password);
   console.log(req.body);
@@ -175,7 +178,8 @@ app.post("/register", (req,res) => {
     console.log(users);
     return res.status(400).send("User already exists");
   }
-  users[id] = {id: id, email:req.body.email, password: req.body.password};
+  users[id] = {id: id, email:req.body.email, password: hashedPassword};
+  console.log(users);
   res.cookie("user_id",id);
   res.redirect("/urls");
 });

@@ -28,6 +28,9 @@ const users = {
   },
 };
 
+/***
+ * generate random shortURl for the longURL provided.
+ */
 const generateRandomString = function() {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -59,11 +62,11 @@ app.get("/urls", (req, res) => {
   // Look up the specific user object in the 'users' object using the 'user_id' cookie value
   const user = users[user_id];
   const templateVars = {user, urls:urlDatabase};
-  console.log("Here is the", req.cookies);
+  //console.log("Here is the", req.cookies);
   res.render("urls_index", templateVars);
 });
 
-//page opens when we click on create new URL
+//Page opens when we click on create new URL
 app.get("/urls/new", (req, res) => {
   const user_id = req.cookies.user_id;
   // Look up the specific user object in the 'users' object using the 'user_id' cookie value
@@ -72,11 +75,30 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
+//route for displaying tinyURL for longURL
 app.get("/urls/:id", (req, res) => {
   const user_id = req.cookies.user_id;
   const user = users[user_id];
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], username: req.cookies["username"], user};
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], user,};
   res.render("urls_show", templateVars);
+});
+
+/**
+ * @param {string} id- Given by user in URL accessed by req.params.id in backend 
+ * @example - if b2xVn2 given in url, longurl is lighthouse one
+ */
+
+//If user directly access shortURL, it redirects to longURL from database
+//if doesn't exist, send message.
+
+app.get("/u/:id", (req, res) => {
+  if (urlDatabase[req.params.id]) {
+    const longURL = urlDatabase[req.params.id];
+    res.redirect(longURL);
+  }
+  else {
+    res.send("Short URL not found");
+  } 
 });
 
 app.get("/register", (req,res) => {
@@ -93,8 +115,9 @@ app.get("/login", (req,res) => {
   res.render("login.ejs",templateVars);
 });
 
+
 app.post("/urls/:id",(req, res) => {
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], username: req.cookies["username"]};
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id],};
   res.render("urls_show",templateVars);
 });
 
@@ -120,6 +143,7 @@ app.post("/urls/:id/update", (req, res) => {
    res.redirect("/urls");
 });
 
+//log in existing user after all the checks and redirects
 app.post("/login",(req, res) => {
   const foundUser = getUserByEmail(req.body.email);
   if (!foundUser) {
@@ -133,7 +157,7 @@ app.post("/login",(req, res) => {
   res.redirect("/urls");
 });
 
-
+//clears cookie and redirect to login page
 app.post("/logout", (req,res) =>{
   res.clearCookie('user_id');
   res.redirect("/login");
@@ -154,27 +178,6 @@ app.post("/register", (req,res) => {
   users[id] = {id: id, email:req.body.email, password: req.body.password};
   res.cookie("user_id",id);
   res.redirect("/urls");
-});
-
-/**
- * @param {string} id- Given by user in URL accessed by req.params.id in backend 
- * @example - if b2xVn2 given in url, longurl is lighthouse one
- */
-
-
-/**
- * If user directly access shortURL, it redirects to longURL from database
- * if doesn't exist, send message.
- */
-
-app.get("/u/:id", (req, res) => {
-  if (urlDatabase[req.params.id]) {
-    const longURL = urlDatabase[req.params.id];
-    res.redirect(longURL);
-  }
-  else {
-    res.send("Short URL not found");
-  } 
 });
 
 app.listen(PORT, () => {

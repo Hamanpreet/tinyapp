@@ -59,6 +59,7 @@ app.get("/urls", (req, res) => {
   // Look up the specific user object in the 'users' object using the 'user_id' cookie value
   const user = users[user_id];
   const templateVars = {user, urls:urlDatabase};
+  console.log("Here is the", req.cookies);
   res.render("urls_index", templateVars);
 });
 
@@ -79,7 +80,12 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/register", (req,res) => {
-res.render("register.ejs");
+  res.render("register.ejs");
+});
+
+app.get("/login", (req,res) => {
+  res.render("login.ejs");
+  res.redirect("/urls");
 });
 
 app.post("/urls/:id",(req, res) => {
@@ -110,13 +116,21 @@ app.post("/urls/:id/update", (req, res) => {
 });
 
 app.post("/login",(req, res) => {
-  res.cookie("username", req.body.username);
+  const foundUser = getUserByEmail(req.body.email);
+  if (!foundUser) {
+    return res.status(400).send("User is not registered");
+  }
+  if (foundUser.password !== req.body.password) {
+    return res.status(400).send("Password Incorrect");
+  } 
+  //console.log(req.body);
+  res.cookie("user_id", foundUser.id );
   res.redirect("/urls");
 });
 
 
 app.post("/logout", (req,res) =>{
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect("urls");
 });
 
@@ -124,17 +138,17 @@ app.post("/logout", (req,res) =>{
 app.post("/register", (req,res) => {
   const id = generateRandomString();
   //console.log(req.body.password);
+  console.log(req.body);
   if (!req.body.email || !req.body.password) {
     return res.status(400).send("E-mail and password both required");
-  } else if (getUserByEmail(req.body.email)) {
+  }
+  if (getUserByEmail(req.body.email)) {
     console.log(users);
     return res.status(400).send("User already exists");
-    
-  } else {
-    users[id] = {id: id, email:req.body.email, password: req.body.password};
-    res.cookie("user_id",id);
-    res.redirect("/urls");
   }
+  users[id] = {id: id, email:req.body.email, password: req.body.password};
+  res.cookie("user_id",id);
+  res.redirect("/urls");
 });
 
 /**

@@ -80,12 +80,17 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/register", (req,res) => {
-  res.render("register.ejs");
+  const user_id = req.cookies.user_id;
+  const user = users[user_id];
+  const templateVars = {user};
+  res.render("register.ejs", templateVars);
 });
 
 app.get("/login", (req,res) => {
-  res.render("login.ejs");
-  res.redirect("/urls");
+  const user_id = req.cookies.user_id;
+  const user = users[user_id];
+  const templateVars = {user};
+  res.render("login.ejs",templateVars);
 });
 
 app.post("/urls/:id",(req, res) => {
@@ -118,10 +123,10 @@ app.post("/urls/:id/update", (req, res) => {
 app.post("/login",(req, res) => {
   const foundUser = getUserByEmail(req.body.email);
   if (!foundUser) {
-    return res.status(400).send("User is not registered");
+    return res.status(403).send("User is not registered");
   }
   if (foundUser.password !== req.body.password) {
-    return res.status(400).send("Password Incorrect");
+    return res.status(403).send("Password Incorrect");
   } 
   //console.log(req.body);
   res.cookie("user_id", foundUser.id );
@@ -131,7 +136,7 @@ app.post("/login",(req, res) => {
 
 app.post("/logout", (req,res) =>{
   res.clearCookie('user_id');
-  res.redirect("urls");
+  res.redirect("/login");
 });
 
 //register new user in database but first check all the conditions using helper function

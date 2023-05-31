@@ -16,15 +16,15 @@ const urlDatabase = {
 };
 
 const users = {
-  userRandomID: {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur",
+  abc: {
+    id: "abc",
+    email: "a@a.com",
+    password: "123",
   },
-  user2RandomID: {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk",
+  def: {
+    id: "def",
+    email: "b@b.com",
+    password:"456",
   },
 };
 
@@ -39,8 +39,13 @@ const generateRandomString = function() {
 };
 
 //Helper function to check if user already registered with that email
-const lookUser = function() {
-
+const getUserByEmail = function(email) {
+  let foundUser = null;
+  for(let user_id in users) {
+    if(users[user_id].email === email) {
+      return foundUser = users[user_id];
+    }
+  }
 };
 
 /**
@@ -115,15 +120,20 @@ app.post("/logout", (req,res) =>{
   res.redirect("urls");
 });
 
+//register new user in database but first check all the conditions using helper function
 app.post("/register", (req,res) => {
   const id = generateRandomString();
   //console.log(req.body.password);
-  if (req.body.email !== "" && req.body.password !== "") {
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).send("E-mail and password both required");
+  } else if (getUserByEmail(req.body.email)) {
+    console.log(users);
+    return res.status(400).send("User already exists");
+    
+  } else {
     users[id] = {id: id, email:req.body.email, password: req.body.password};
     res.cookie("user_id",id);
     res.redirect("/urls");
-  } else {
-    return res.status(400).send("E-mail and password both required");
   }
 });
 

@@ -27,8 +27,10 @@ app.use(methodOverride('_method'));
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "9sm5xK": "http://www.google.com",
 };
+
+const count = 0;
 
 const users = {};
 
@@ -85,9 +87,10 @@ app.get("/urls/:id", (req, res) => {
 app.get("/u/:id", (req, res) => {
   if (urlDatabase[req.params.id]) {
     const longURL = urlDatabase[req.params.id];
+    count++;
     res.redirect(longURL);
   } else {
-    res.send("Short URL not found");
+    res.status(404).send("Short URL not found");
   }
 });
 

@@ -7,6 +7,7 @@ TinyApp is a full stack web application built with Node and Express that aims to
 - URL Shortening: Generate short URLs from long ones.
 - URL Redirection: Redirect shortened URLs to their original addresses.
 - User Authentication: Allow users to sign up, log in, and manage their shortened URLs.
+- You made a typo in your URL when creating it? You can edit or delete it!
 
 ## Technologies Used
 
@@ -16,8 +17,9 @@ TinyApp is a full stack web application built with Node and Express that aims to
 
 ## Final Product
 
-!["screenshot description"](#)
-!["screenshot description"](#)
+!["Main page"](./docs/Main%20Page.png)
+!["Edit"](./docs/Login.png)
+!["Login"](./docs/Edit.png)
 
 ## Dependencies
 
@@ -26,6 +28,7 @@ TinyApp is a full stack web application built with Node and Express that aims to
 - EJS
 - bcryptjs
 - cookie-session
+- mocha and chai (for tests)
 
 ## Getting Started
 

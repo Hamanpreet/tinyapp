@@ -21,6 +21,7 @@
         <p class="card-text">
           Short URL ID: <a href="/u/<%= id %>"><%= id %></a>
         </p>
+        
         <!-- action tells where the information goes when submitted -->
       </div>
       <form method="POST" action="/urls/<%= id %>?_method=PUT">

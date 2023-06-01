@@ -23,7 +23,7 @@
         </p>
         <!-- action tells where the information goes when submitted -->
       </div>
-      <form action="/urls/<%= id %>/update" method="POST">
+      <form method="POST" action="/urls/<%= id %>?_method=PUT">
       <div class="card-footer text-muted">
         <p style="text-align:left; color:gray">New URL:</p>
           <center>

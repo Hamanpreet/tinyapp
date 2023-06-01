@@ -40,7 +40,7 @@
                <!--href has the link where the edit button takes us to(urls/show) -->
                 <td><a href="/urls/<%= id %>" style="background-color:white; color: blue; border: 1px solid blue;" class="btn btn-primary">Edit</a></td>
             
-               <form method="POST" action="/urls/<%= id %>/delete">
+               <form method="POST" action="/urls/<%= id %>?_method=DELETE">
               <td><button type="submit" style="background-color:white; color:red; border: 1px solid red;" class="btn btn-primary">Delete</button></td>
             </form>
             </tr>

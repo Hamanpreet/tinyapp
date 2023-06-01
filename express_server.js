@@ -4,7 +4,14 @@
 const express = require("express");
 const app = express();
 const cookieSession = require('cookie-session');
+const methodOverride = require('method-override');
+const bcrypt = require('bcryptjs');
 const Keygrip = require('keygrip');
+
+const PORT = 8080;  
+app.set("view engine", "ejs");
+//To parse the request buffer data
+app.use(express.urlencoded({ extended: true }));
 // Generate a set of keys for signing cookies
 const keys = new Keygrip(['key1', 'key2', 'key3']);
 app.use(cookieSession({
@@ -13,12 +20,9 @@ app.use(cookieSession({
   // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
-const PORT = 8080;  
-app.set("view engine", "ejs");
-//To parse the request buffer data
-app.use(express.urlencoded({ extended: true }));
-const bcrypt = require('bcryptjs');
 const {getUserByEmail} = require("./helpers.js");
+app.use(methodOverride('_method'));
+
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -134,13 +138,13 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${id}`);
 });
 
-app.post("/urls/:id/delete", (req, res) => {
+app.delete("/urls/:id", (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect("/urls");
 });
 
 //updates the longURL with edit button
-app.post("/urls/:id/update", (req, res) => {
+app.put("/urls/:id", (req, res) => {
   urlDatabase[req.params.id] = req.body.newURL;
    res.redirect("/urls");
 });

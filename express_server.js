@@ -18,6 +18,7 @@ app.set("view engine", "ejs");
 //To parse the request buffer data
 app.use(express.urlencoded({ extended: true }));
 const bcrypt = require('bcryptjs');
+const {getUserByEmail} = require("./helpers.js");
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -48,16 +49,6 @@ const generateRandomString = function() {
     result += characters.charAt(randomIndex);
   }
   return result;
-};
-
-//Helper function to check if user already registered with that email
-const getUserByEmail = function(email, database) {
-  let foundUser = null;
-  for(let user_id in users) {
-    if(users[user_id].email === email) {
-      return foundUser = users[user_id];
-    }
-  }
 };
 
 /**
@@ -157,7 +148,7 @@ app.post("/urls/:id/update", (req, res) => {
 //log in existing user after all the checks and redirects
 app.post("/login",(req, res) => {
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
-  const foundUser = getUserByEmail(req.body.email, urlDatabase);
+  const foundUser = getUserByEmail(req.body.email, users);
   if (!foundUser) {
     return res.status(403).send("User is not registered");
   }
@@ -186,7 +177,7 @@ app.post("/register", (req,res) => {
   if (!req.body.email || !req.body.password) {
     return res.status(400).send("E-mail and password both required");
   }
-  if (getUserByEmail(req.body.email, urlDatabase)) {
+  if (getUserByEmail(req.body.email, users)) {
     console.log(users);
     return res.status(400).send("User already exists");
   }

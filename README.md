@@ -13,7 +13,6 @@ TinyApp is a full stack web application built with Node and Express that aims to
 - Frontend: HTML, CSS, JavaScript
 - Backend: Node.js, Express.js
 - Backend: Node.js, Express.js
-- Authentication: JSON Web Tokens (JWT)???
 
 ## Final Product
 

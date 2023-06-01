@@ -51,7 +51,7 @@ const generateRandomString = function() {
 };
 
 //Helper function to check if user already registered with that email
-const getUserByEmail = function(email) {
+const getUserByEmail = function(email, database) {
   let foundUser = null;
   for(let user_id in users) {
     if(users[user_id].email === email) {
@@ -67,7 +67,7 @@ const getUserByEmail = function(email) {
  * sending back a template & object with data template needs
  */
 app.get("/urls", (req, res) => {
-  //const user_id = req.cookies.user_id;
+  //const user_id = req.cookies.user_id; (This was used with cookie-parser, just a diff syntax with cookie session)
   const user_id = req.session.user_id;
   // Look up the specific user object in the 'users' object using the 'user_id' cookie value
   const user = users[user_id];
@@ -157,7 +157,7 @@ app.post("/urls/:id/update", (req, res) => {
 //log in existing user after all the checks and redirects
 app.post("/login",(req, res) => {
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
-  const foundUser = getUserByEmail(req.body.email);
+  const foundUser = getUserByEmail(req.body.email, urlDatabase);
   if (!foundUser) {
     return res.status(403).send("User is not registered");
   }
@@ -186,7 +186,7 @@ app.post("/register", (req,res) => {
   if (!req.body.email || !req.body.password) {
     return res.status(400).send("E-mail and password both required");
   }
-  if (getUserByEmail(req.body.email)) {
+  if (getUserByEmail(req.body.email, urlDatabase)) {
     console.log(users);
     return res.status(400).send("User already exists");
   }

@@ -30,8 +30,6 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com",
 };
 
-const count = 0;
-
 const users = {};
 
 /***
@@ -47,6 +45,15 @@ const generateRandomString = function() {
   return result;
 };
 
+// / => homepage
+app.get("/", (req, res) => {
+  if (req.session.user_id) {
+    res.redirect("/urls");
+  } else {
+    res.redirect("/login");
+  }
+});
+
 /*
  * Middleware function to handle GET requests to /urls
  * urls_index file in views,so,no need to give path or extension
@@ -57,24 +64,39 @@ app.get("/urls", (req, res) => {
   const user_id = req.session.user_id;
   // Look up the specific user object in the 'users' object using the 'user_id' cookie value(need this for header)
   const user = users[user_id];
-  const templateVars = {user, urls:urlDatabase};
-  res.render("urls_index", templateVars);
+  if (!req.session.user_id) {
+    res.status(404).send("You need to be login to be able to do that");
+  } else {
+    const templateVars = {user, urls:urlDatabase};
+    res.render("urls_index", templateVars);
+  }
 });
 
 //Page opens when we click on create new URL
 app.get("/urls/new", (req, res) => {
   const user_id = req.session.user_id;
-  const user = users[user_id];
-  const templateVars = {user, urls: urlDatabase};
-  res.render("urls_new", templateVars);
+  if (!req.session.user_id) {
+    res.redirect("/login");
+  } else {
+    const user = users[user_id];
+    const templateVars = {user, urls: urlDatabase};
+    res.render("urls_new", templateVars);
+  }
 });
 
 //route for displaying tinyURL for longURL
 app.get("/urls/:id", (req, res) => {
   const user_id = req.session.user_id;
-  const user = users[user_id];
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], user,};
-  res.render("urls_show", templateVars);
+  const keys = Object.keys(urlDatabase);
+  if (!req.session.user_id) {
+    res.status(400).send("You need to be logged in to view that");
+  } if (!keys.includes(req.params.id)) {
+    res.status(404).send("ShortUrl not found");
+  }  
+    const user = users[user_id];
+    const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], user,};
+    res.render("urls_show", templateVars);
+  
 });
 
 /**
@@ -87,10 +109,9 @@ app.get("/urls/:id", (req, res) => {
 app.get("/u/:id", (req, res) => {
   if (urlDatabase[req.params.id]) {
     const longURL = urlDatabase[req.params.id];
-    count++;
     res.redirect(longURL);
   } else {
-    res.status(404).send("Short URL not found");
+    res.status(404).send("Short URL doesn't exist");
   }
 });
 
@@ -122,9 +143,13 @@ app.post("/urls/:id",(req, res) => {
  */
 
 app.post("/urls", (req, res) => {
-  const id = generateRandomString();
-  urlDatabase[id] = req.body.longURL;
-  res.redirect(`/urls/${id}`);
+  if (!req.session.user_id) {
+    res.redirect("/login");
+  } else {
+    const id = generateRandomString();
+    urlDatabase[id] = req.body.longURL;
+    res.redirect(`/urls/${id}`);
+  }
 });
 
 //delete the existing URLs
@@ -156,8 +181,8 @@ app.post("/login",(req, res) => {
 
 //clears cookie and redirect to login page
 app.post("/logout", (req,res) =>{
-  req.session.user_id = "";
-  res.redirect("/login");
+  delete req.session.user_id;
+    res.redirect('/login');
 });
 
 //register new user in database but first check all the conditions using helper function

@@ -18,7 +18,7 @@ const generateRandomString = function() {
  * Function returns the urls owned by specific user in a result object
  */
 
-const urlsForUser = function(id,urlDatabase) {
+const urlsForUser = function(id, urlDatabase) {
   const result = {};
   for (const key in urlDatabase) {
    if (urlDatabase[key].userID === id) {
@@ -38,4 +38,5 @@ const getUserByEmail = function(email, database) {
   }
 };
 
+//exporting these helper functions to express_server
 module.exports = {getUserByEmail,generateRandomString, urlsForUser};

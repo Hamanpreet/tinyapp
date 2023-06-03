@@ -1,7 +1,9 @@
+//importing the assert library from Chai
 const { assert } = require('chai');
 
 const { getUserByEmail } = require('../helpers.js');
 
+//database for test
 const testUsers = {
   "abc": {
     id: "abc", 

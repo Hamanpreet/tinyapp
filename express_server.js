@@ -80,9 +80,9 @@ app.get("/urls/:id", (req, res) => {
   } else if (urlDatabase[req.params.id].userID !== user_id) {
     return res.status(404).send("You don't have access to view that");
   } else {
-  const user = users[user_id];
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id].longURL, user,};
-  res.render("urls_show", templateVars);
+    const user = users[user_id];
+    const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id].longURL, user,};
+    res.render("urls_show", templateVars);
   }
 });
 
@@ -137,21 +137,20 @@ app.post("/urls/:id",(req, res) => {
 
 app.post("/urls", (req, res) => {
   if (!req.session.user_id) {
-    res.send("You need to login first");
-  } else {
-    const id = generateRandomString();
-    urlDatabase[id] =  {
-      longURL: req.body.longURL,
-      userID: req.session.user_id
-    }
-    res.redirect(`/urls/${id}`);
+    return res.send("You need to login first");
   }
+  const id = generateRandomString();
+  urlDatabase[id] =  {
+    longURL: req.body.longURL,
+    userID: req.session.user_id
+  };
+  res.redirect(`/urls/${id}`);
 });
 
 //delete the existing URLs
 app.delete("/urls/:id", (req, res) => {
   const keys = Object.keys(urlDatabase);
-  const user_id = req.session.user_id
+  const user_id = req.session.user_id;
   if (!user_id) {
     return res.status(400).send("You need to login to delete this");
   }
@@ -186,8 +185,8 @@ app.post("/login",(req, res) => {
 
 //clears cookie and redirect to login page
 app.post("/logout", (req,res) =>{
-  delete req.session.user_id;
-    res.redirect('/login');
+  req.session = null;
+  res.redirect('/login');
 });
 
 //register new user in database but first check all the conditions using helper function
